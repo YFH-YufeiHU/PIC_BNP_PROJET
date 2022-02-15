@@ -18,7 +18,15 @@ python main.py  --data_root './data_loading/funsd' \
                 --gpu_id 0 \
                 > train_funsd.out
 ~~~
-
+!python main.py  --data_root './data_loading/SROIE' \
+                --dataset 'sroie' \
+                --model 'LayoutLM' \
+                --num_train_epochs 10 \
+                --lr 5e-5 \
+                --batch_size 2 \
+                --val_batch_size 1 \
+                --gpu_id 0 \
+               
 ## Evaluation
 ~~~bash
 python main.py  --data_root './data_loading/funsd' \
