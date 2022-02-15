@@ -18,6 +18,7 @@ python main.py  --data_root './data_loading/funsd' \
                 --gpu_id 0 \
                 > train_funsd.out
 ~~~
+~~~bash
 !python main.py  --data_root './data_loading/SROIE' \
                 --dataset 'sroie' \
                 --model 'LayoutLM' \
@@ -26,7 +27,7 @@ python main.py  --data_root './data_loading/funsd' \
                 --batch_size 2 \
                 --val_batch_size 1 \
                 --gpu_id 0 \
-               
+~~~
 ## Evaluation
 ~~~bash
 python main.py  --data_root './data_loading/funsd' \
