@@ -3,7 +3,7 @@ import torch
 from transformers import AdamW
 from tqdm import tqdm
 from data_loading.funsd import train_dataloader,eval_dataloader
-from evaluate import evaluate
+from .evaluate import evaluate
 from torch.utils.tensorboard import SummaryWriter
 import os
 
