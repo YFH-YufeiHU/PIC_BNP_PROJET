@@ -66,7 +66,7 @@ def train(model, device, train_dataloader, eval_dataloader,optimizer,labels,num_
             if results['f1']>f1:
                 torch.save(model.state_dict(), './checkpoint_LayoutLMF_{}_best.pth'.format(epoch))
                 f1 = results['f1']
-
+            print(results)
 
 
 

@@ -79,7 +79,8 @@ def main():
     optimizer = AdamW(model.parameters(), lr=opts.lr)
     if opts.test_only:
         model.load_state_dict(torch.load('./checkpoint_LayoutLMF_funsd.pth'))
-        evaluate(model=model, device=device, eval_dataloader=eval_dataloader,labels=labels)
+        results = evaluate(model=model, device=device, eval_dataloader=eval_dataloader,labels=labels)
+        print(results)
         return
     else:
         print('test')

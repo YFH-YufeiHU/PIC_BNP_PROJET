@@ -77,5 +77,5 @@ def evaluate(model, device, eval_dataloader,labels):
         "f1": f1_score(out_label_list, preds_list),
     }
 
-    print(results)
+    # print(results)
     return results
