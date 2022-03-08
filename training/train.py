@@ -57,16 +57,16 @@ def train(model, device, train_dataloader, eval_dataloader,optimizer,labels,num_
             optimizer.step()
             optimizer.zero_grad()
             global_step += 1
-            results = evaluate(model,device,eval_dataloader,labels)
-            model.train()
-            writer.add_scalar('loss', results['loss'], epoch)
-            writer.add_scalar('precision', results['precision'], epoch)
-            writer.add_scalar('recall', results['recall'], epoch)
-            writer.add_scalar('f1', results['f1'], epoch)
-            if results['f1']>f1:
-                torch.save(model.state_dict(), './checkpoint_LayoutLMF_{}_best.pth'.format(epoch))
-                f1 = results['f1']
-            print(results)
+        results = evaluate(model,device,eval_dataloader,labels)
+        model.train()
+        writer.add_scalar('loss', results['loss'], epoch)
+        writer.add_scalar('precision', results['precision'], epoch)
+        writer.add_scalar('recall', results['recall'], epoch)
+        writer.add_scalar('f1', results['f1'], epoch)
+        if results['f1']>f1:
+            torch.save(model.state_dict(), './checkpoint_LayoutLMF_{}_best.pth'.format(epoch))
+            f1 = results['f1']
+        print(results)
 
 
 

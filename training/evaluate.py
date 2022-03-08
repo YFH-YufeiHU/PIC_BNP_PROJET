@@ -59,14 +59,14 @@ def evaluate(model, device, eval_dataloader,labels):
     preds_list = [[] for _ in range(out_label_ids.shape[0])]
     # label_map = {i: label for i, label in enumerate(labels)}
     pad_token_label_id = CrossEntropyLoss().ignore_index
-    print(pad_token_label_id)
-    print(label_map)
+    # print(pad_token_label_id)
+    # print(label_map)
     # exit()
 
     for i in range(out_label_ids.shape[0]):
         for j in range(out_label_ids.shape[1]):
             if out_label_ids[i, j] != pad_token_label_id:
-                print(label_map[out_label_ids[i][j]])
+                # print(label_map[out_label_ids[i][j]])
                 out_label_list[i].append(label_map[out_label_ids[i][j]])
                 preds_list[i].append(label_map[preds[i][j]])
 
