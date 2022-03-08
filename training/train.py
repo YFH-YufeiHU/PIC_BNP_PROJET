@@ -57,7 +57,7 @@ def train(model, device, train_dataloader, eval_dataloader,optimizer,labels,num_
             optimizer.step()
             optimizer.zero_grad()
             global_step += 1
-            results = evaluate(model,device,eval_dataloader)
+            results = evaluate(model,device,eval_dataloader,labels)
             model.train()
             writer.add_scalar('loss', results['loss'], epoch)
             writer.add_scalar('precision', results['precision'], epoch)
