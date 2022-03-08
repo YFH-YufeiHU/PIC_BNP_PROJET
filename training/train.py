@@ -45,7 +45,7 @@ def train(model, device, train_dataloader, eval_dataloader,optimizer,labels,num_
 
             # print loss every 100 steps
             if global_step % 100 == 0:
-            print(f"Loss after {global_step} steps: {loss.item()}")
+                print(f"Train Loss after {global_step} steps: {loss.item()}")
 
             # backward pass to get the gradients
             loss.backward()
