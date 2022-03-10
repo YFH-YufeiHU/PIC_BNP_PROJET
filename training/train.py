@@ -1,3 +1,4 @@
+import shutil
 from transformers import LayoutLMForTokenClassification
 import torch
 from transformers import AdamW
@@ -6,9 +7,10 @@ from data_loading.funsd import train_dataloader,eval_dataloader
 from .evaluate import evaluate
 from torch.utils.tensorboard import SummaryWriter
 import os
+import shutil
 
 if os.path.exists('./tensorboard_log'):
-    pass
+    shutil.rmtree('./tensorboard_log')
 else:
     os.mkdir('./tensorboard_log')
 writer = SummaryWriter('./tensorboard_log')

@@ -18,7 +18,7 @@ def get_argparser():
                         choices=['funsd', 'sroie'], help='Name of dataset')
     # Models Options
     parser.add_argument("--model", type=str, default='LayoutLM',
-                        choices=['LayoutLM', 'LayoutLM'], help='model name')
+                        choices=['LayoutLM', 'LayoutLMv2'], help='model name')
     # Train Options
     parser.add_argument("--test_only", action='store_true', default=False)
     parser.add_argument("--save_val_results", action='store_true', default=False,
@@ -73,7 +73,7 @@ def main():
     if opts.model == 'LayoutLM':
         model = LayoutLMForTokenClassification.from_pretrained("microsoft/layoutlm-base-uncased", num_labels=num_labels)
     else:
-        pass
+        model = LayoutLMForTokenClassification.from_pretrained("microsoft/layoutlmv2-base-uncased", num_labels=num_labels)
     model.to(device)
     # define optimization
     optimizer = AdamW(model.parameters(), lr=opts.lr)
