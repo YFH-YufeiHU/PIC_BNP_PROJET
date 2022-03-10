@@ -21,7 +21,7 @@ def get_labels(path):
     return labels
 
 
-def train(model, device, train_dataloader, eval_dataloader,optimizer,labels,num_train_epochs):
+def train(model, device, train_dataloader, val_dataloader, optimizer,labels,num_train_epochs):
     model.to(device)
     global_step = 0
     num_train_epochs = num_train_epochs
@@ -57,19 +57,20 @@ def train(model, device, train_dataloader, eval_dataloader,optimizer,labels,num_
             optimizer.step()
             optimizer.zero_grad()
             global_step += 1
-
+        
         print("Evaluation for the epoch {}".format(epoch+1))
-        results = evaluate(model,device,eval_dataloader,labels)
+        results_val = evaluate(model,device, val_dataloader,labels)
+        results_train = evaluate(model,device, train_dataloader,labels)
         model.train()
-        writer.add_scalar('loss', results['loss'], epoch)
-        writer.add_scalar('precision', results['precision'], epoch)
-        writer.add_scalar('recall', results['recall'], epoch)
-        writer.add_scalar('f1', results['f1'], epoch)
-        if results['f1']>f1:
+        writer.add_scalars('loss', {'train loss':results_train['loss'],'val loss':results_val['loss']}, epoch)
+        writer.add_scalars('precision', {'train precision':results_train['precision'],'val precision':results_val['precision']}, epoch)
+        writer.add_scalars('recall', {'train recall':results_train['recall'],'val recall':results_val['recall']}, epoch)
+        writer.add_scalars('f1', {'train f1':results_val['f1'],'val f1':results_val['f1']}, epoch)
+        if results_val['f1']>f1:
             print("Save the best model of epoch {}".format(epoch + 1))
             torch.save(model.state_dict(), './checkpoint_LayoutLMF_best.pth')
-            f1 = results['f1']
-        print(results)
+            f1 = results_val['f1']
+        print(results_val)
 
 
     torch.save(model.state_dict(), './checkpoint_LayoutLMF_final.pth')
