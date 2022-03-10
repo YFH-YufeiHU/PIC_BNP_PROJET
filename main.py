@@ -49,7 +49,7 @@ def main():
     random.seed(opts.random_seed)
     # define number of labels refer to different dataset
     if opts.dataset.lower() == 'funsd':
-        from data_loading.funsd import train_dataloader, eval_dataloader
+        from data_loading.funsd import train_dataloader, eval_dataloader,val_dataloader
         def get_labels(path):
             with open(path, "r") as f:
                 labels = f.read().splitlines()
@@ -59,7 +59,7 @@ def main():
         labels = get_labels(os.path.join(opts.data_root,"labels.txt"))
         num_labels = len(labels)
     else:
-        from data_loading.funsd_sroie import train_dataloader, eval_dataloader
+        from data_loading.funsd_sroie import train_dataloader, eval_dataloader,val_dataloader
         def get_labels(path):
             with open(path, "r") as f:
                 labels = f.read().splitlines()
@@ -84,7 +84,7 @@ def main():
         return
     else:
         print('test')
-        globel_step, loss = train(model=model, device=device, train_dataloader=train_dataloader, eval_dataloader=eval_dataloader,optimizer=optimizer, labels=labels,num_train_epochs = opts.num_train_epochs)
+        globel_step, loss = train(model=model, device=device, train_dataloader=train_dataloader, val_dataloader=val_dataloader, optimizer=optimizer, labels=labels,num_train_epochs = opts.num_train_epochs)
         print('the globel step is {} and the loss is {}'.format(globel_step,loss))
         return
 if __name__ == '__main__':
