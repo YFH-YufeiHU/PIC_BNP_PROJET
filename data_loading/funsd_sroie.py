@@ -11,6 +11,7 @@ import random
 import torch
 from data_loading.read_txt_utils import convert_examples_to_features, read_examples_from_file
 import  numpy as np
+from torch.utils.data import random_split
 
 # if there are questions about path, change line 102 and 113.
 
@@ -134,11 +135,32 @@ args = AttrDict(args)
 
 tokenizer = LayoutLMTokenizer.from_pretrained("microsoft/layoutlm-base-uncased")
 
+# split = 0.75
+# train_split = int(split*int(dataset))
+
     # the LayoutLM authors already defined a specific FunsdDataset, so we are going to use this here
-train_dataset = FunsdDataset(args, tokenizer, labels, pad_token_label_id, mode="train")
+# train_dataset = FunsdDataset(args, tokenizer, labels, pad_token_label_id, mode="train")
+# train_sampler = RandomSampler(train_dataset)
+# train_dataloader = DataLoader(train_dataset,
+#                               sampler=train_sampler,
+#                               batch_size=2)
+
+train_dataset_all = FunsdDataset(args, tokenizer, labels, pad_token_label_id, mode="train")
+train_size = round(train_dataset_all.__len__()*0.75)
+val_size = train_dataset_all.__len__() - train_size
+
+train_val_test_split = [train_size, val_size]
+train_dataset, val_dataset = random_split(
+                train_dataset_all, train_val_test_split)
+
 train_sampler = RandomSampler(train_dataset)
 train_dataloader = DataLoader(train_dataset,
                               sampler=train_sampler,
+                              batch_size=2)
+
+val_sampler = RandomSampler(val_dataset)
+val_dataloader = DataLoader(val_dataset,
+                              sampler=val_sampler,
                               batch_size=2)
 
 eval_dataset = FunsdDataset(args, tokenizer, labels, pad_token_label_id, mode="test")
@@ -147,6 +169,7 @@ eval_dataloader = DataLoader(eval_dataset,
                               sampler=eval_sampler,
                             batch_size=2)
 
-print(len(train_dataloader))
-print(len(eval_dataloader))
-print(eval_dataloader)
+# print(len(train_dataloader))
+# print(len(eval_dataloader))
+# print(eval_dataloader)
+print(val_dataloader)
