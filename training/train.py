@@ -67,7 +67,7 @@ def train(model, device, train_dataloader, val_dataloader, optimizer,labels,num_
         writer.add_scalars('loss', {'train loss':results_train['loss'],'val loss':results_val['loss']}, epoch)
         writer.add_scalars('precision', {'train precision':results_train['precision'],'val precision':results_val['precision']}, epoch)
         writer.add_scalars('recall', {'train recall':results_train['recall'],'val recall':results_val['recall']}, epoch)
-        writer.add_scalars('f1', {'train f1':results_val['f1'],'val f1':results_val['f1']}, epoch)
+        writer.add_scalars('f1', {'train f1':results_train['f1'],'val f1':results_val['f1']}, epoch)
         if results_val['f1']>f1:
             print("Save the best model of epoch {}".format(epoch + 1))
             torch.save(model.state_dict(), './checkpoint_LayoutLMF_best.pth')
