@@ -78,6 +78,18 @@ def evaluate(model, device, eval_dataloader,labels,save_result=False):
         "recall": recall_score(out_label_list, preds_list),
         "f1": f1_score(out_label_list, preds_list),
     }
-
+    if save_result:
+        with open("./predictions.txt", "w") as f:
+            with open("./data_loading/FUNSD/test.txt", "r") as f1:
+                example_id = 0
+                for line in f1:
+                    if line.startswith("-DOCSTART-") or line == "" or line == "\n":
+                        print(line)
+                        f.write(line)
+                        if not preds_list[example_id]:
+                            example_id += 1
+                    elif preds_list[example_id]:
+                        output_line = (line.split()[0] + " " + preds_list[example_id].pop(0) + "\n")
+                        f.write(output_line)
     # print(results)
     return results
