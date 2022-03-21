@@ -13,7 +13,7 @@ from seqeval.metrics import (
     recall_score,
 )
 
-def evaluate(model, device, eval_dataloader,labels,save_result=False):
+def evaluate(model, device, eval_dataloader,labels,save_result=False,version_v2=False):
     eval_loss = 0.0
     nb_eval_steps = 0
     preds = None
@@ -31,10 +31,16 @@ def evaluate(model, device, eval_dataloader,labels,save_result=False):
             attention_mask = batch[1].to(device)
             token_type_ids = batch[2].to(device)
             labels = batch[3].to(device)
+            if version_v2 == True:
+              imgs = batch[5].to(device)
 
             # forward pass
-            outputs = model(input_ids=input_ids, bbox=bbox, attention_mask=attention_mask, token_type_ids=token_type_ids,
-                            labels=labels)
+            if version_v2:
+              outputs = model(image=imgs,input_ids=input_ids, bbox=bbox, attention_mask=attention_mask, token_type_ids=token_type_ids,
+                              labels=labels)
+            else:
+              outputs = model(input_ids=input_ids, bbox=bbox, attention_mask=attention_mask, token_type_ids=token_type_ids,
+                              labels=labels)
             if save_result:
                 pass
             # get the loss and logits
