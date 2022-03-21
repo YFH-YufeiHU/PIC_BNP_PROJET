@@ -69,8 +69,7 @@ class FunsdDataset(Dataset):
                 logger.info("Saving features into cached file %s", cached_features_file)
                 torch.save(features, cached_features_file)
 
-        path_img = recursive_glob('/content/PIC_BNP_PROJET/data_loading/FUNSD/training_data/images',suffix='.png')
-            
+             
         if args.local_rank == 0 and mode == "train":
             torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
 
@@ -91,10 +90,16 @@ class FunsdDataset(Dataset):
         self.all_bboxes = torch.tensor([f.boxes for f in features], dtype=torch.long)
         self.images = []
         transform_ = transforms.Compose([transforms.ToTensor(),])
-        for path in path_img:
+        for path in features:
+          # print(path.file_name)
+          if mode == "train":
+            path = os.path.join('/content/PIC_BNP_PROJET/data_loading/FUNSD/training_data/images',path.file_name)
+          else:
+            path = os.path.join('/content/PIC_BNP_PROJET/data_loading/FUNSD/testing_data/images',path.file_name)
           img = Image.open(path).convert("RGB")
           img = transform_(img)
           self.images.append(img)
+        # exit()
         # print(len(self.images))
       
     def __len__(self):

@@ -41,7 +41,7 @@ def train(model, device, train_dataloader, val_dataloader, optimizer,labels,num_
             labels = batch[3].to(device)
             if version_v2 == True:
               imgs = batch[5].to(device)
-
+        
             # forward pass
             if version_v2:
               outputs = model(image = imgs,input_ids=input_ids, bbox=bbox, attention_mask=attention_mask, token_type_ids=token_type_ids,
