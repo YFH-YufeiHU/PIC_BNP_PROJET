@@ -1,4 +1,6 @@
+from pickle import FALSE
 from transformers import LayoutLMForTokenClassification
+from transformers import LayoutLMv2ForTokenClassification
 import torch
 from transformers import AdamW
 from tqdm import tqdm
@@ -72,8 +74,10 @@ def main():
     # define model
     if opts.model == 'LayoutLM':
         model = LayoutLMForTokenClassification.from_pretrained("microsoft/layoutlm-base-uncased", num_labels=num_labels)
+        version_v2 = False
     else:
-        model = LayoutLMForTokenClassification.from_pretrained("microsoft/layoutlmv2-base-uncased", num_labels=num_labels)
+        model = LayoutLMv2ForTokenClassification.from_pretrained("microsoft/layoutlmv2-base-uncased", num_labels=num_labels)
+        version_v2 = True
     model.to(device)
     # define optimization
     optimizer = AdamW(model.parameters(), lr=opts.lr)
@@ -83,8 +87,7 @@ def main():
         print(results)
         return
     else:
-        print('test')
-        globel_step, loss = train(model=model, device=device, train_dataloader=train_dataloader, val_dataloader=val_dataloader, optimizer=optimizer, labels=labels,num_train_epochs = opts.num_train_epochs)
+        globel_step, loss = train(model=model, device=device, train_dataloader=train_dataloader, val_dataloader=val_dataloader, optimizer=optimizer, labels=labels,num_train_epochs = opts.num_train_epochs,version_v2=version_v2)
         print('the globel step is {} and the loss is {}'.format(globel_step,loss))
         return
 if __name__ == '__main__':

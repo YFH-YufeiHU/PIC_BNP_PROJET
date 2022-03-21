@@ -160,6 +160,7 @@ def convert_examples_to_features(
         segment_ids += [pad_token_segment_id] * padding_length
         label_ids += [pad_token_label_id] * padding_length
         token_boxes += [pad_token_box] * padding_length
+        #images = [Image.open(path).convert("RGB") for path in examples['image_path']]
 
         if ex_index < 5:
             logger.info("*** Example ***")

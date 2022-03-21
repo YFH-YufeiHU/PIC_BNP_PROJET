@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 import json
 from torch.nn import CrossEntropyLoss
-from transformers import LayoutLMTokenizer
+from transformers import LayoutLMTokenizer,LayoutLMv2Tokenizer
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 import matplotlib.pyplot as plt
 from torch.utils.data import Dataset
@@ -76,6 +76,7 @@ class FunsdDataset(Dataset):
             [f.label_ids for f in features], dtype=torch.long
         )
         self.all_bboxes = torch.tensor([f.boxes for f in features], dtype=torch.long)
+        self.images = [Image.open(path).convert("RGB") for path in examples['image_path']]
 
     def __len__(self):
         return len(self.features)
@@ -87,6 +88,8 @@ class FunsdDataset(Dataset):
             self.all_segment_ids[index],
             self.all_label_ids[index],
             self.all_bboxes[index],
+            # for layout lm v2
+            self.images[index],
         )
 
 
@@ -123,8 +126,10 @@ class AttrDict(dict):
         self.__dict__ = self
 
 args = AttrDict(args)
-
-tokenizer = LayoutLMTokenizer.from_pretrained("microsoft/layoutlm-base-uncased")
+# for layoutlm v1
+# tokenizer = LayoutLMTokenizer.from_pretrained("microsoft/layoutlm-base-uncased")
+# for layoutlm v2
+tokenizer = LayoutLMv2Tokenizer.from_pretrained("microsoft/layoutlmv2-base-uncased")
 
 train_dataset_all = FunsdDataset(args, tokenizer, labels, pad_token_label_id, mode="train")
 train_size = round(train_dataset_all.__len__()*0.75)

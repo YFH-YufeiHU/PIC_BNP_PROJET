@@ -23,7 +23,7 @@ def get_labels(path):
     return labels
 
 
-def train(model, device, train_dataloader, val_dataloader, optimizer,labels,num_train_epochs):
+def train(model, device, train_dataloader, val_dataloader, optimizer,labels,num_train_epochs,version_v2=False):
     model.to(device)
     global_step = 0
     num_train_epochs = num_train_epochs
@@ -39,9 +39,15 @@ def train(model, device, train_dataloader, val_dataloader, optimizer,labels,num_
             attention_mask = batch[1].to(device)
             token_type_ids = batch[2].to(device)
             labels = batch[3].to(device)
+            if version_v2 == True:
+              imgs = batch[5].to(device)
 
             # forward pass
-            outputs = model(input_ids=input_ids, bbox=bbox, attention_mask=attention_mask, token_type_ids=token_type_ids,
+            if version_v2:
+              outputs = model(image = imgs,input_ids=input_ids, bbox=bbox, attention_mask=attention_mask, token_type_ids=token_type_ids,
+                          labels=labels)
+            else:
+              outputs = model(input_ids=input_ids, bbox=bbox, attention_mask=attention_mask, token_type_ids=token_type_ids,
                           labels=labels)
             loss = outputs.loss
 
