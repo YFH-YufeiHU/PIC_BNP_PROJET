@@ -11,6 +11,7 @@ import random
 import torch
 from data_loading.read_txt_utils import convert_examples_to_features, read_examples_from_file
 from torch.utils.data import random_split
+from torchvision import transforms
 
 # if there are questions about path, change line 102 and 113.
 
@@ -18,7 +19,17 @@ logger = logging.getLogger(__name__)
 
 # In fact, the codes of FunsdDataset is also included in the library layoutlm.data.funsd, we can use these functions directly by importing this library.
 # Here we define the FunsdDataset by ourself and we create the torch type dataset for funsd which can be directly called in main.py to train.
-
+def recursive_glob(rootdir=".", suffix=""):
+    """Performs recursive glob with given suffix and rootdir
+        :param rootdir is the root directory
+        :param suffix is the suffix to be searched
+    """
+    return [
+        os.path.join(looproot, filename)
+        for looproot, _, filenames in os.walk(rootdir)
+        for filename in filenames
+        if filename.endswith(suffix)
+    ]
 
 class FunsdDataset(Dataset):
     def __init__(self, args, tokenizer, labels, pad_token_label_id, mode):
@@ -58,6 +69,8 @@ class FunsdDataset(Dataset):
                 logger.info("Saving features into cached file %s", cached_features_file)
                 torch.save(features, cached_features_file)
 
+        path_img = recursive_glob('/content/PIC_BNP_PROJET/data_loading/FUNSD/training_data/images',suffix='.png')
+            
         if args.local_rank == 0 and mode == "train":
             torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
 
@@ -76,8 +89,14 @@ class FunsdDataset(Dataset):
             [f.label_ids for f in features], dtype=torch.long
         )
         self.all_bboxes = torch.tensor([f.boxes for f in features], dtype=torch.long)
-        self.images = [Image.open(path).convert("RGB") for path in examples['image_path']]
-
+        self.images = []
+        transform_ = transforms.Compose([transforms.ToTensor(),])
+        for path in path_img:
+          img = Image.open(path).convert("RGB")
+          img = transform_(img)
+          self.images.append(img)
+        # print(len(self.images))
+      
     def __len__(self):
         return len(self.features)
 
